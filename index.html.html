@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRAND RP LEO TOOL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest" crossorigin="anonymous"></script>
+    <style>
+        .animate-fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        kbd {
+            background-color: #1e293b; color: #38bdf8; border: 1px solid #334155; 
+            border-radius: 4px; padding: 2px 6px; font-family: monospace; font-weight: bold; font-size: 0.8em;
+            box-shadow: 0 2px 0 #0f172a;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #334155; }
+        body { background-color: #020617; }
+        
+        .hide { display: none !important; }
+
+        .mdt-input {
+            width: 100%;
+            background-color: #1e293b; 
+            border: 1px solid #334155; 
+            border-radius: 0.375rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            color: #f1f5f9; 
+            transition: all 0.2s;
+        }
+        .mdt-input:focus {
+            outline: none;
+            border-color: #3b82f6; 
+            box-shadow: 0 0 0 1px #3b82f6;
+        }
+        .mdt-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #94a3b8; 
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-blue-500/30 custom-scrollbar">
+
+    <div class="bg-slate-900 border-b border-slate-800 p-6 sticky top-0 z-50 shadow-xl">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-6">
+                <div class="flex items-center gap-4">
+                    <div class="bg-gradient-to-br from-blue-600 to-indigo-800 p-2.5 rounded-xl shadow-lg border border-blue-500/20">
+                        <i data-lucide="shield" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+                            GRAND RP LEO TOOL
+                            <span class="text-[10px] bg-slate-800 text-blue-400 px-2 py-0.5 rounded border border-slate-700 font-mono uppercase tracking-wider">v5.0</span>
+                        </h1>
+                        <p class="text-slate-400 text-sm flex items-center gap-2">
+                            Official Toolkit &amp; Standard Operating Procedures
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center gap-3 overflow-x-auto">
+                    <!-- Navigation Tabs -->
+                    <div class="flex w-full sm:w-auto bg-slate-800/50 p-1 rounded-lg border border-slate-700/50 min-w-max">
+                        <button onclick="switchTab('penalCode')" id="tab-btn-penalCode" class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-md text-sm font-bold transition-all bg-blue-600 text-white shadow-md whitespace-nowrap">
+                            <i data-lucide="book-open" class="w-4 h-4"></i> Penal Code
+                        </button>
+                        <button onclick="switchTab('bodycam')" id="tab-btn-bodycam" class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-md text-sm font-bold transition-all text-slate-400 hover:text-white hover:bg-slate-700/50 whitespace-nowrap">
+                            <i data-lucide="video" class="w-4 h-4"></i> Bodycam Commands
+                        </button>
+                        <button onclick="switchTab('sops')" id="tab-btn-sops" class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-md text-sm font-bold transition-all text-slate-400 hover:text-white hover:bg-slate-700/50 whitespace-nowrap">
+                            <i data-lucide="gavel" class="w-4 h-4"></i> Arrest Guide
+                        </button>
+                        <button onclick="switchTab('logs')" id="tab-btn-logs" class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-md text-sm font-bold transition-all text-slate-400 hover:text-white hover:bg-slate-700/50 whitespace-nowrap">
+                            <i data-lucide="clipboard-list" class="w-4 h-4"></i> Logs &amp; Forms
+                        </button>
+                    </div>
+
+                    <!-- Download App Button -->
+                    <button onclick="downloadOffline()" class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-md text-sm font-bold transition-all bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600 hover:text-white border border-emerald-500/30 hover:border-emerald-500 shadow-sm whitespace-nowrap" title="Download this tool for offline use">
+                        <i data-lucide="download" class="w-4 h-4"></i> App
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters for Penal Code -->
+            <div id="filter-container" class="flex flex-col sm:flex-row gap-3 w-full animate-fade-in">
+                <div class="relative flex-1">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4"></i>
+                    <input type="text" id="search-input" placeholder="Search codes or names..." class="w-full pl-9 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm placeholder:text-slate-500">
+                </div>
+                <select id="category-select" class="px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-sm text-slate-200 outline-none focus:ring-2 focus:ring-blue-500 sm:w-64">
+                    <option value="All">All Chapters</option>
+                    <!-- Categories dynamically injected by JS -->
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto p-6 pb-20">
+
+        <!-- === PENAL CODE TAB === -->
+        <div id="tab-penalCode" class="animate-fade-in">
+            <!-- Stats -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8" id="stats-container">
+                <!-- Dynamically populated by JS -->
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+                <div class="hidden lg:grid grid-cols-12 gap-4 px-6 py-4 bg-slate-800/80 border-b border-slate-800 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                    <div class="col-span-1">Code</div>
+                    <div class="col-span-4">Offense &amp; Details</div>
+                    <div class="col-span-2 text-center">Fine</div>
+                    <div class="col-span-2 text-center">Stars</div>
+                    <div class="col-span-2">Notes</div>
+                    <div class="col-span-1 text-right">Action</div>
+                </div>
+
+                <div id="laws-table-body" class="divide-y divide-slate-800">
+                    <!-- Laws dynamically injected by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- === BODYCAM COMMANDS TAB === -->
+        <div id="tab-bodycam" class="animate-fade-in hide">
+            
+            <!-- Badge Input Control Row -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 bg-slate-900 border border-slate-800 p-4 rounded-xl shadow-sm">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="video" class="w-6 h-6 text-blue-400"></i>
+                    <h2 class="text-xl font-bold text-white">Bodycam Commands</h2>
+                </div>
+                <div class="w-full sm:w-80 flex items-center gap-3">
+                    <label class="mdt-label mb-0 whitespace-nowrap">Badge #</label>
+                    <input type="text" class="mdt-input badge-sync py-1.5" placeholder="e.g. 1234" oninput="updateBadgeNumber(this.value)">
+                </div>
+            </div>
+
+            <!-- Commands Grid -->
+            <div id="bodycam-commands-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Macros dynamically injected by JS -->
+            </div>
+        </div>
+
+        <!-- === ARREST GUIDE TAB === -->
+        <div id="tab-sops" class="animate-fade-in space-y-6 hide">
+            <!-- Badge Input Control Row -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 bg-slate-900 border border-slate-800 p-4 rounded-xl shadow-sm">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="book-open" class="w-6 h-6 text-indigo-400"></i>
+                    <h2 class="text-xl font-bold text-white">Step-by-Step Arrest Guide</h2>
+                </div>
+                <div class="w-full sm:w-80 flex items-center gap-3">
+                    <label class="mdt-label mb-0 whitespace-nowrap">Badge #</label>
+                    <input type="text" class="mdt-input badge-sync py-1.5" placeholder="e.g. 1234" oninput="updateBadgeNumber(this.value)">
+                </div>
+            </div>
+
+            <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 mb-4">
+                <h4 class="flex items-center gap-2 text-amber-500 font-bold text-sm mb-2">
+                    <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                    Crucial Warning
+                </h4>
+                <p class="text-xs text-amber-200/80 leading-relaxed">
+                    ALWAYS HOLSTER YOUR WEAPON BEFORE DOING ANY ACTIONS!! The moment the suspect is placed in cuffs, your <strong class="text-amber-400">25 MINUTE TIMER</strong> begins. Keep track of your cuff time.
+                </p>
+            </div>
+
+            <div id="arrest-guide-container" class="space-y-3 pb-8">
+                <!-- Arrest Guide dynamically injected by JS -->
+            </div>
+        </div>
+
+        <!-- === LOGS & FORMS TAB === -->
+        <div id="tab-logs" class="animate-fade-in space-y-6 hide">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <!-- Tow / Ticket Log -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm h-full flex flex-col">
+                    <div class="px-4 py-3 border-b flex items-center justify-between bg-blue-500/10 border-blue-500/20">
+                        <div class="flex items-center gap-3 text-blue-400">
+                            <i data-lucide="file-text" class="w-5 h-5"></i>
+                            <h3 class="font-bold text-sm uppercase tracking-wider">Tow / Ticket Log</h3>
+                        </div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col gap-4">
+                        <div>
+                            <label class="mdt-label">Owner Name</label>
+                            <input type="text" id="tow-owner" class="mdt-input" placeholder="e.g. John Doe">
+                        </div>
+                        <div>
+                            <label class="mdt-label">License Plate</label>
+                            <input type="text" id="tow-plate" class="mdt-input" placeholder="e.g. ABC 123">
+                        </div>
+                        <div>
+                            <label class="mdt-label flex items-center justify-between">
+                                <span>Reason</span>
+                                <span class="text-blue-500 lowercase text-[10px] italic cursor-pointer hover:underline" onclick="switchTab('penalCode')">(Search traffic law)</span>
+                            </label>
+                            <input type="text" id="tow-reason" class="mdt-input" placeholder="e.g. TC 6.2.A Illegal Parking (Red Curb)">
+                        </div>
+                        <div>
+                            <label class="mdt-label">Amount of Fine</label>
+                            <input type="text" id="tow-fine" class="mdt-input" placeholder="e.g. $15,000">
+                        </div>
+                        <div>
+                            <label class="mdt-label">Proof</label>
+                            <input type="text" id="tow-proof" class="mdt-input" placeholder="Imgur/Discord link">
+                        </div>
+                        
+                        <div class="mt-auto pt-4">
+                            <button id="btn-tow-log" onclick="copyFormLog('tow', 'btn-tow-log')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                                <i data-lucide="copy" class="w-4 h-4"></i> Copy Log
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Arrest Log -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm h-full flex flex-col">
+                    <div class="px-4 py-3 border-b flex items-center gap-3 bg-red-500/10 border-red-500/20 text-red-400">
+                        <i data-lucide="user-minus" class="w-5 h-5"></i>
+                        <h3 class="font-bold text-sm uppercase tracking-wider">Arrest Log</h3>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col gap-4">
+                        <div>
+                            <label class="mdt-label">Name of Suspect</label>
+                            <input type="text" id="arrest-name" class="mdt-input" placeholder="e.g. Jane Doe">
+                        </div>
+                        <div>
+                            <label class="mdt-label">Wanted Stars</label>
+                            <select id="arrest-stars" class="mdt-input cursor-pointer">
+                                <option value="⭐">1 Star ⭐</option>
+                                <option value="⭐⭐">2 Stars ⭐⭐</option>
+                                <option value="⭐⭐⭐">3 Stars ⭐⭐⭐</option>
+                                <option value="⭐⭐⭐⭐">4 Stars ⭐⭐⭐⭐</option>
+                                <option value="⭐⭐⭐⭐⭐">5 Stars ⭐⭐⭐⭐⭐</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="mdt-label">Arrested For</label>
+                            <input type="text" id="arrest-reason" class="mdt-input" placeholder="e.g. PC 2.6.4 Attempted Murder">
+                        </div>
+                        <div>
+                            <label class="mdt-label">Fines</label>
+                            <input type="text" id="arrest-fines" class="mdt-input" placeholder="e.g. $20,000">
+                        </div>
+                        <div>
+                            <label class="mdt-label">Proof</label>
+                            <input type="text" id="arrest-proof" class="mdt-input" placeholder="Bodycam link / Images">
+                        </div>
+                        
+                        <div class="mt-auto pt-4">
+                            <button id="btn-arrest-log" onclick="copyFormLog('arrest', 'btn-arrest-log')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                                <i data-lucide="copy" class="w-4 h-4"></i> Copy Log
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prison Guards Log -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm h-full flex flex-col">
+                    <div class="px-4 py-3 border-b flex items-center gap-3 bg-emerald-500/10 border-emerald-500/20 text-emerald-400">
+                        <i data-lucide="lock" class="w-5 h-5"></i>
+                        <h3 class="font-bold text-sm uppercase tracking-wider">Prison Guards Log</h3>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col gap-4">
+                        <div>
+                            <label class="mdt-label">Name | ID (example509910)</label>
+                            <input type="text" id="prison-name-id" class="mdt-input" placeholder="John | 123456">
+                        </div>
+                        <div>
+                            <label class="mdt-label">Organization</label>
+                            <input type="text" id="prison-org" class="mdt-input" value="LSPD" placeholder="LSPD">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="mdt-label">Start Time (UK 24h)</label>
+                                <input type="text" id="prison-start" class="mdt-input" placeholder="14:00">
+                            </div>
+                            <div>
+                                <label class="mdt-label">End Time (UK 24h)</label>
+                                <input type="text" id="prison-end" class="mdt-input" placeholder="16:30">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="mdt-label">Proof</label>
+                            <input type="text" id="prison-proof" class="mdt-input" placeholder="Image link">
+                        </div>
+                        
+                        <div class="mt-auto pt-4">
+                            <button id="btn-prison-log" onclick="copyFormLog('prison', 'btn-prison-log')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                                <i data-lucide="copy" class="w-4 h-4"></i> Copy Log
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Log -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm h-full flex flex-col">
+                    <div class="px-4 py-3 border-b flex items-center gap-3 bg-purple-500/10 border-purple-500/20 text-purple-400">
+                        <i data-lucide="activity" class="w-5 h-5"></i>
+                        <h3 class="font-bold text-sm uppercase tracking-wider">Activity Log</h3>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col gap-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="mdt-label">On Duty Time</label>
+                                <input type="text" id="act-on" class="mdt-input" placeholder="10:00">
+                            </div>
+                            <div>
+                                <label class="mdt-label">Off Duty Time</label>
+                                <input type="text" id="act-off" class="mdt-input" placeholder="18:00">
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="mdt-label">Tows Made</label><input type="text" id="act-tows" class="mdt-input" placeholder="0"></div>
+                            <div><label class="mdt-label">Tickets Issued</label><input type="text" id="act-tickets" class="mdt-input" placeholder="0"></div>
+                            <div><label class="mdt-label">Arrests Made</label><input type="text" id="act-arrests" class="mdt-input" placeholder="0"></div>
+                            <div><label class="mdt-label">Items Confiscated</label><input type="text" id="act-items" class="mdt-input" placeholder="0"></div>
+                        </div>
+
+                        <div>
+                            <label class="mdt-label">Events Attended</label>
+                            <input type="text" id="act-events" class="mdt-input" placeholder="Bank Robbery, Store Robbery, etc.">
+                        </div>
+
+                        <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 space-y-3">
+                            <label class="mdt-label text-slate-500 border-b border-slate-800 pb-1">Armory Log</label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="mdt-label">Weapons Taken</label><input type="text" id="act-w-taken" class="mdt-input" placeholder="e.g. 2 AR, 1 Tazer"></div>
+                                <div><label class="mdt-label">Weapons Returned</label><input type="text" id="act-w-returned" class="mdt-input" placeholder="e.g. 2 AR, 1 Tazer"></div>
+                            </div>
+                            <div>
+                                <label class="mdt-label">Weapons Given (to/from whom)</label>
+                                <input type="text" id="act-w-given" class="mdt-input" placeholder="N/A or Name">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="mdt-label">Bodycam Proof</label>
+                            <input type="text" id="act-proof" class="mdt-input" placeholder="Links separated by comma">
+                        </div>
+                        
+                        <div class="mt-auto pt-4">
+                            <button id="btn-activity-log" onclick="copyFormLog('activity', 'btn-activity-log')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                                <i data-lucide="copy" class="w-4 h-4"></i> Copy Activity Log
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // FULL PENAL CODE AND TRAFFIC LAW DATA ARRAY
+        const PENAL_CODE = [
+            // Drug Related
+            { id: 'PC 2.1.1', category: 'Drug Related', label: 'Possession of Cocaine (Small)', fine: 20000, stars: 0, notes: 'Confiscation', description: 'Up to 4 units' },
+            { id: 'PC 2.1.2', category: 'Drug Related', label: 'Possession of Cocaine (Moderate)', fine: 30000, stars: 0, notes: 'Confiscation', description: '5 to 8 units' },
+            { id: 'PC 2.1.3', category: 'Drug Related', label: 'Possession of Cocaine (Intent to Supply)', fine: 15000, stars: 2, notes: 'Confiscation', description: 'Over 8 units' },
+            { id: 'PC 2.1.4', category: 'Drug Related', label: 'Production of Cocaine', fine: 45000, stars: 4, notes: 'Confiscation', description: 'Manufacturing using modulated equipment' },
+            { id: 'PC 2.2.1', category: 'Drug Related', label: 'Possession of Cannabis (Small)', fine: 20000, stars: 0, notes: 'Confiscation', description: 'Up to 10 units' },
+            { id: 'PC 2.2.2', category: 'Drug Related', label: 'Possession of Cannabis (Moderate)', fine: 30000, stars: 0, notes: 'Confiscation', description: '11 or more units' },
+            { id: 'PC 2.2.3', category: 'Drug Related', label: 'Possession of Cannabis (Intent to Supply)', fine: 15000, stars: 2, notes: 'Confiscation', description: 'Selling or attempting to sell cannabis' },
+            { id: 'PC 2.2.4', category: 'Drug Related', label: 'Cultivation of Cannabis (Small)', fine: 30000, stars: 1, notes: 'Confiscation', description: 'Growing up to 5 plants' },
+            { id: 'PC 2.2.5', category: 'Drug Related', label: 'Cultivation of Cannabis (Large)', fine: 45000, stars: 3, notes: 'Confiscation', description: 'Growing more than 5 plants' },
+            { id: 'PC 2.2.6', category: 'Drug Related', label: 'Production of Cannabis', fine: 45000, stars: 3, notes: 'Confiscation', description: 'Manufacturing using modulated equipment' },
+            { id: 'PC 2.3', category: 'Drug Related', label: 'Usage of Illicit Substances in Public', fine: 10000, stars: 0, notes: 'Confiscation', description: 'Consuming cocaine or cannabis in a public forum' },
+
+            // Prohibited Items
+            { id: 'PC 2.4.1', category: 'Prohibited Items', label: 'Possession of Prohibited Items (Small)', fine: 15000, stars: 0, notes: 'Class A Infraction / Confiscation', description: 'Up to 3 illegal items' },
+            { id: 'PC 2.4.2', category: 'Prohibited Items', label: 'Possession of Prohibited Items (Large)', fine: 15000, stars: 2, notes: 'Confiscation', description: 'More than 3 items' },
+            { id: 'PC 2.4.3', category: 'Prohibited Items', label: 'Sale of a Prohibited Item', fine: 25000, stars: 3, notes: 'Confiscation', description: 'Selling or purchasing from list' },
+            { id: 'PC 2.4.4', category: 'Prohibited Items', label: 'Possession of Infected Technology', fine: 35000, stars: 4, notes: 'Confiscation', description: 'USB with a virus' },
+
+            // Weapon Violations
+            { id: 'PC 2.5.1', category: 'Weapon Violations', label: 'Carrying Without License', fine: 20000, stars: 0, notes: 'Class A Infraction / Confiscation', description: 'No valid weapon license' },
+            { id: 'PC 2.5.2', category: 'Weapon Violations', label: 'Overcarrying', fine: 20000, stars: 2, notes: 'Confiscation / Revoke License', description: 'More than allowed ammo/weapons' },
+            { id: 'PC 2.5.3', category: 'Weapon Violations', label: 'Open Carrying', fine: 10000, stars: 2, notes: 'Confiscation / Revoke License', description: 'Openly carrying in public' },
+            { id: 'PC 2.5.4', category: 'Weapon Violations', label: 'Possession of Prohibited Weapon', fine: 20000, stars: 0, notes: 'Class A Infraction / Confiscation', description: 'Prohibited weapon type' },
+            { id: 'PC 2.5.5', category: 'Weapon Violations', label: 'Possession of Multiple Prohibited Weapons', fine: 20000, stars: 3, notes: 'Confiscation / Revoke License', description: 'More than one prohibited weapon' },
+            { id: 'PC 2.5.6', category: 'Weapon Violations', label: 'Brandishing of a Weapon', fine: 25000, stars: 3, notes: 'Confiscation / Revoke License', description: 'Intimidate or threaten' },
+            { id: 'PC 2.5.7', category: 'Weapon Violations', label: 'Possession of State Issued Articles', fine: 20000, stars: 3, notes: 'Confiscation', description: 'Armour, balaclavas belonging to state' },
+            { id: 'PC 2.5.8', category: 'Weapon Violations', label: 'Discharging Weapon in Public', fine: 10000, stars: 1, notes: 'Confiscation / Revoke License', description: 'Shooting but not at a person' },
+            { id: 'PC 2.5.9', category: 'Weapon Violations', label: 'Distribution of Weapons/Ammo/Articles', fine: 50000, stars: 5, notes: 'Confiscation / Revoke License', description: 'Selling/buying state articles' },
+            { id: 'PC 2.5.10', category: 'Weapon Violations', label: 'Production of Ammunition', fine: 50000, stars: 4, notes: 'Confiscation / Revoke License', description: 'Manufacturing ammo' },
+
+            // Bodily Harm
+            { id: 'PC 2.6.1', category: 'Bodily Harm', label: 'Non-lethal Battery', fine: 10000, stars: 1, description: 'Inflicting bodily harm without firearm' },
+            { id: 'PC 2.6.2', category: 'Bodily Harm', label: 'Manslaughter', fine: 15000, stars: 3, description: 'Unintentionally killing another person' },
+            { id: 'PC 2.6.3', category: 'Bodily Harm', label: 'Assault by Threat', fine: 10000, stars: 2, description: 'Verbal assault with likelihood of execution' },
+            { id: 'PC 2.6.4', category: 'Bodily Harm', label: 'Attempted Murder', fine: 20000, stars: 4, notes: 'No Bail', description: 'Attempting to kill' },
+            { id: 'PC 2.6.5', category: 'Bodily Harm', label: 'Murder Through Hostile Action', fine: 30000, stars: 5, notes: 'No Bail', description: 'Killing a person' },
+            { id: 'PC 2.6.6', category: 'Bodily Harm', label: 'Rape / Sexual Assault', fine: 50000, stars: 5, description: 'Sexual intercourse against will' },
+
+            // Neglect
+            { id: 'PC 2.7.1', category: 'Neglect', label: 'Failure to Act', fine: 10000, stars: 1, description: 'Leaving a person to bleed out' },
+            { id: 'PC 2.7.2', category: 'Neglect', label: 'Refusal of Duty to Act', fine: 60000, stars: 3, notes: 'Dismissal from position', description: 'State employee refusing to act for public' },
+            { id: 'PC 2.7.3', category: 'Neglect', label: 'Failure to Act by Public Servant', fine: 0, stars: 3, notes: 'Dismissal from position', description: 'Public servant leaving person to bleed' },
+            { id: 'PC 2.7.4', category: 'Neglect', label: 'Abandonment of Civilian', fine: 0, stars: 4, notes: 'Dismissal from position', description: 'Leaving vulnerable person in charge' },
+
+            // Violations of Freedom
+            { id: 'PC 2.8.1', category: 'Violations of Freedom', label: 'Abduction', fine: 20000, stars: 4, notes: 'No Bail', description: 'Taking by force or deception' },
+            { id: 'PC 2.8.2', category: 'Violations of Freedom', label: 'Kidnapping', fine: 25000, stars: 4, notes: 'No Bail', description: 'Holding captive' },
+            { id: 'PC 2.8.3', category: 'Violations of Freedom', label: 'Taking a Hostage', fine: 30000, stars: 4, notes: 'No Bail', description: 'Taking person in exchange for something' },
+            { id: 'PC 2.8.4', category: 'Violations of Freedom', label: 'Human Trafficking', fine: 50000, stars: 4, notes: 'No Bail', description: 'Force/coercion for labor or sex acts' },
+            { id: 'PC 2.8.5', category: 'Violations of Freedom', label: 'Violation of Privacy', fine: 20000, stars: 2, description: 'Breaching confidentiality' },
+            { id: 'PC 2.8.6', category: 'Violations of Freedom', label: 'Unlawful Detention', fine: 20000, stars: 3, description: 'Unclear/unwarranted detention by public servant' },
+
+            // Harassment
+            { id: 'PC 2.9.1', category: 'Harassment', label: 'Street Harassment', fine: 10000, stars: 2, description: 'Unwelcome comments/whistles' },
+            { id: 'PC 2.9.2', category: 'Harassment', label: 'Sexual Harassment', fine: 150000, stars: 5, description: 'Harassment of sexual kind' },
+            { id: 'PC 2.9.3', category: 'Harassment', label: 'Stalking', fine: 35000, stars: 4, notes: 'No Bail', description: 'Following causing fear of injury/death' },
+            { id: 'PC 2.9.4', category: 'Harassment', label: 'Hooliganism', fine: 20000, stars: 3, description: 'Massive disturbance of peace' },
+            { id: 'PC 2.9.5', category: 'Harassment', label: 'Rioting', fine: 35000, stars: 3, description: 'Inciting disturbance by 3+ people' },
+            { id: 'PC 2.9.6', category: 'Harassment', label: 'Spreading of Disease', fine: 10000, stars: 0, notes: 'Class A Infraction', description: 'Spreading disease intentionally' },
+            { id: 'PC 2.9.7', category: 'Harassment', label: 'Indecent Exposure', fine: 20000, stars: 2, description: 'Showing private areas' },
+            { id: 'PC 2.9.8', category: 'Harassment', label: 'Provoking', fine: 10000, stars: 2, description: 'Causing reaction to annoying conduct' },
+            { id: 'PC 2.9.9', category: 'Harassment', label: 'Prostitution', fine: 5000, stars: 0, description: 'Buying/selling sexual desires' },
+            { id: 'PC 2.9.10', category: 'Harassment', label: 'Defamation', fine: 50000, stars: 3, notes: 'Judge applied only', description: 'Damaging reputation' },
+            { id: 'PC 2.9.11', category: 'Harassment', label: 'Public Servant Harassment', fine: 30000, stars: 3, description: 'Harassing a public servant' },
+
+            // Robbery & Fraud
+            { id: 'PC 2.10.1', category: 'Robbery & Fraud', label: 'Document Forgery', fine: 15000, stars: 3, notes: 'Confiscation', description: 'False documents' },
+            { id: 'PC 2.10.2', category: 'Robbery & Fraud', label: 'ATM Looting', fine: 8000, stars: 1, notes: 'Confiscation', description: 'Robbing ATM' },
+            { id: 'PC 2.10.3', category: 'Robbery & Fraud', label: 'Theft of Property', fine: 20000, stars: 3, description: 'Taking stuff without consent' },
+            { id: 'PC 2.10.4', category: 'Robbery & Fraud', label: 'Fraud', fine: 20000, stars: 3, description: 'Defrauding someone' },
+            { id: 'PC 2.10.5', category: 'Robbery & Fraud', label: 'Grand Theft Auto', fine: 30000, stars: 3, description: 'Taking car without permission' },
+            { id: 'PC 2.10.6', category: 'Robbery & Fraud', label: 'Robbery', fine: 35000, stars: 4, notes: 'No Bail', description: 'Theft with force/threat' },
+            { id: 'PC 2.10.7', category: 'Robbery & Fraud', label: 'False Advertising', fine: 10000, stars: 0, notes: 'Class A Infraction', description: 'Untrue advert' },
+
+            // Driving
+            { id: 'PC 2.11.1', category: 'Driving', label: 'Reckless Driving', fine: 20000, stars: 2, notes: 'Revoke License', description: 'Operating vehicle negligently' },
+            { id: 'PC 2.11.2', category: 'Driving', label: 'Injury by Dangerous Driving', fine: 20000, stars: 3, notes: 'Revoke License', description: 'Hurting someone with car' },
+            { id: 'PC 2.11.3', category: 'Driving', label: 'Death by Dangerous Driving', fine: 30000, stars: 4, notes: 'Revoke License / No Bail', description: 'Killing someone with car' },
+            { id: 'PC 2.11.4', category: 'Driving', label: 'Failure to Yield (Emergency)', fine: 10000, stars: 1, notes: 'Revoke License', description: 'Not stopping for emergency lights' },
+
+            // Animal Cruelty
+            { id: 'PC 2.12.1', category: 'Animal Cruelty', label: 'Animal Abuse (Minor)', fine: 20000, stars: 2, description: 'Hurting animal deliberately' },
+            { id: 'PC 2.12.2', category: 'Animal Cruelty', label: 'Animal Abuse (Major)', fine: 30000, stars: 3, description: 'Significantly hurting animal' },
+            { id: 'PC 2.12.3', category: 'Animal Cruelty', label: 'Animal Abuse (Death)', fine: 30000, stars: 4, notes: 'No Bail', description: 'Killing an animal' },
+
+            // Miscellaneous
+            { id: 'PC 2.13.1', category: 'Miscellaneous', label: 'Attempted Suicide', fine: 20000, stars: 1, notes: 'Mental Health Screening', description: 'Attempting to end one\'s life' },
+            { id: 'PC 2.13.2', category: 'Miscellaneous', label: 'Conspiracy to commit a crime', fine: 20000, stars: 2, description: 'Plotting or conspiring to commit a crime' },
+            { id: 'PC 2.13.3', category: 'Miscellaneous', label: 'Vandalism', fine: 30000, stars: 3, notes: 'Reparations Applicable', description: 'Destruction of property' },
+            { id: 'PC 2.13.4', category: 'Miscellaneous', label: 'Illegal fishing', fine: 10000, stars: 0, notes: 'Class B Infraction', description: 'Fishing in protected areas' },
+            { id: 'PC 2.13.5', category: 'Miscellaneous', label: 'Breach of Contract', fine: 0, stars: 3, notes: 'Fine = Agreed sum', description: 'Breaching terms of a contract' },
+            { id: 'PC 2.13.6', category: 'Miscellaneous', label: 'Entrapment', fine: 100000, stars: 4, notes: 'Dismissal', description: 'Tricking someone into committing a crime' },
+            { id: 'PC 2.13.7', category: 'Miscellaneous', label: 'Installation of temp structure without permit', fine: 15000, stars: 0, notes: 'Class B Infraction', description: 'Installing a temporary structure in public' },
+            { id: 'PC 2.13.8', category: 'Miscellaneous', label: 'Installation of temp structure on roadway', fine: 15000, stars: 1, description: 'Installing a temporary structure on a public path' },
+            { id: 'PC 2.13.9', category: 'Miscellaneous', label: 'Failure to maintain updated passport', fine: 10000, stars: 0, notes: 'Class C Infraction', description: 'Passport without valid photo' },
+
+            // Crimes Against State
+            { id: 'PC 3.1.1', category: 'Crimes Against State', label: 'Participation in Terrorism', fine: 50000, stars: 5, description: 'Violence with political aims' },
+            { id: 'PC 3.1.2', category: 'Crimes Against State', label: 'Organization of Terrorism', fine: 75000, stars: 5, description: 'Recruiting for terrorism' },
+            { id: 'PC 3.1.3', category: 'Crimes Against State', label: 'Leading Terrorist Org', fine: 100000, stars: 5, description: 'Leading organization' },
+            { id: 'PC 3.1.4', category: 'Crimes Against State', label: 'Committing Terrorist Act', fine: 50000, stars: 5, description: 'Committing act' },
+            { id: 'PC 3.1.5', category: 'Crimes Against State', label: 'Creation of Armed Group', fine: 35000, stars: 4, notes: 'No Bail', description: 'Stable group with weapon access' },
+            { id: 'PC 3.1.6', category: 'Crimes Against State', label: 'Banditry', fine: 25000, stars: 4, notes: 'No Bail', description: 'Committing organized crime' },
+            { id: 'PC 3.2', category: 'Crimes Against State', label: 'Obstruction of Justice', fine: 35000, stars: 3, description: 'Interfering with justice/law' },
+            { id: 'PC 3.3', category: 'Crimes Against State', label: 'Attempted seizure of power', fine: 75000, stars: 5, description: 'Illegal seizing of power' },
+            { id: 'PC 3.4.1', category: 'Crimes Against State', label: 'Trespassing on private property', fine: 20000, stars: 2, description: 'Entering land of another unlawfully' },
+            { id: 'PC 3.4.2', category: 'Crimes Against State', label: 'Trespassing in a state facility', fine: 30000, stars: 3, description: 'Entering state facility unlawfully' },
+            { id: 'PC 3.4.3', category: 'Crimes Against State', label: 'Breaking and entering', fine: 35000, stars: 4, description: 'Forcing passage into another\'s building' },
+            { id: 'PC 3.5', category: 'Crimes Against State', label: 'Failure to comply', fine: 35000, stars: 4, description: 'Refusing lawful request' },
+            { id: 'PC 3.6', category: 'Crimes Against State', label: 'Failure to identify', fine: 10000, stars: 2, description: 'Refusing to provide ID' },
+            { id: 'PC 3.7', category: 'Crimes Against State', label: 'Illegal Gambling', fine: 20000, stars: 2, description: 'Unauthorized gambling' },
+            { id: 'PC 3.8.1', category: 'Crimes Against State', label: 'Impersonation of a public servant', fine: 35000, stars: 2, description: 'Appropriation of public powers' },
+            { id: 'PC 3.8.2', category: 'Crimes Against State', label: 'Impersonation of a LEO', fine: 35000, stars: 3, description: 'Appropriation of LEO powers' },
+            { id: 'PC 3.9.1', category: 'Crimes Against State', label: 'Breach of electoral silence', fine: 25000, stars: 3, description: 'Campaigning during voting' },
+            { id: 'PC 3.9.2', category: 'Crimes Against State', label: 'Breach of electoral silence at voting booth', fine: 50000, stars: 4, description: 'Campaigning near booth' },
+            { id: 'PC 3.9.3', category: 'Crimes Against State', label: 'Blocking a voting site', fine: 35000, stars: 4, description: 'Limiting right to vote' },
+            { id: 'PC 3.9.4', category: 'Crimes Against State', label: 'Illegal persuasion of votes', fine: 35000, stars: 4, description: 'Exchanging benefits for votes' },
+            { id: 'PC 3.10', category: 'Crimes Against State', label: 'Battery of a public servant', fine: 15000, stars: 3, description: 'Bodily injury to state employee' },
+            { id: 'PC 3.11', category: 'Crimes Against State', label: 'Murder or attempted murder of a public servant', fine: 35000, stars: 5, description: 'Murder/attempt of state personnel' },
+            { id: 'PC 3.12', category: 'Crimes Against State', label: 'False reporting', fine: 20000, stars: 3, description: 'Alerting authorities falsely' },
+            { id: 'PC 3.13.1', category: 'Crimes Against State', label: 'Active bribery', fine: 20000, stars: 3, description: 'Offering money/favor' },
+            { id: 'PC 3.13.2', category: 'Crimes Against State', label: 'Passive bribery', fine: 50000, stars: 5, description: 'Receiving money/favor' },
+            { id: 'PC 3.13.3', category: 'Crimes Against State', label: 'Quid pro quo', fine: 50000, stars: 5, notes: 'Dismissal', description: 'Favor granted in return for something' },
+            { id: 'PC 3.14', category: 'Crimes Against State', label: 'Failure to pay fines', fine: 20000, stars: 3, notes: 'No Bail', description: 'Failure to pay sum fixed by law' },
+            { id: 'PC 3.15.1', category: 'Crimes Against State', label: 'Evading arrest', fine: 20000, stars: 3, notes: 'No Bail', description: 'Fleeing from a police officer' },
+            { id: 'PC 3.15.2', category: 'Crimes Against State', label: 'Assisting the evasion of arrest', fine: 20000, stars: 3, notes: 'No Bail', description: 'Assisting a citizen evade arrest' },
+            { id: 'PC 3.15.3', category: 'Crimes Against State', label: 'Assisting evasion by public servant', fine: 75000, stars: 5, notes: 'No Bail', description: 'Public servant assisting evasion' },
+            { id: 'PC 3.16.1', category: 'Crimes Against State', label: 'Street harassment towards colleague', fine: 20000, stars: 2, notes: 'Dismissal', description: 'Harassment towards colleague' },
+            { id: 'PC 3.16.2', category: 'Crimes Against State', label: 'Hostile work environment', fine: 50000, stars: 3, notes: 'Dismissal', description: 'Creating uncomfortable environment' },
+            { id: 'PC 3.16.3', category: 'Crimes Against State', label: 'Sexual harassment towards colleague', fine: 50000, stars: 3, notes: 'Dismissal', description: 'Sexual harassment towards colleague' },
+            { id: 'PC 3.17', category: 'Crimes Against State', label: 'Going Absent Without Leave', fine: 50000, stars: 5, notes: 'Dismissal', description: 'Absent without authority' },
+            { id: 'PC 3.18', category: 'Crimes Against State', label: 'Provoking of a public servant', fine: 20000, stars: 2, description: 'Inducing reaction to annoy/harass LEO' },
+            { id: 'PC 3.19', category: 'Crimes Against State', label: 'Tax Evasion', fine: 100000, stars: 4, description: 'Attempts to evade tax' },
+            { id: 'PC 3.20', category: 'Crimes Against State', label: 'Participation in a cyber attack', fine: 25000, stars: 4, description: 'Hacker attack against state' },
+            { id: 'PC 3.21', category: 'Crimes Against State', label: 'Unfair Dismissal', fine: 350000, stars: 4, notes: 'Out of court settlement', description: 'Dismissing without protocol/reason' },
+
+            // Malfeasance
+            { id: 'PC 4.1', category: 'Malfeasance', label: 'Disobeying an Order', fine: 20000, stars: 3, notes: 'No Bail', description: 'Failing to follow order from superior' },
+            { id: 'PC 4.2', category: 'Malfeasance', label: 'Professional Misconduct', fine: 75000, stars: 5, description: 'Conduct unsuitable or dangerous' },
+            { id: 'PC 4.3', category: 'Malfeasance', label: 'Sabotage', fine: 75000, stars: 5, description: 'Destroying state property to halt ops' },
+            { id: 'PC 4.4', category: 'Malfeasance', label: 'Espionage', fine: 75000, stars: 5, description: 'Spying or watching a person/state' },
+            { id: 'PC 4.5', category: 'Malfeasance', label: 'Conduct Unbecoming', fine: 75000, stars: 5, description: 'Acting against public interest' },
+            { id: 'PC 4.6', category: 'Malfeasance', label: 'Corruption', fine: 75000, stars: 5, notes: 'No Bail', description: 'Dishonest/fraudulent behavior by power given by the state.' },
+
+            // Judicial
+            { id: 'PC 5.1', category: 'Judicial', label: 'Disobeying Judicial Order', fine: 20000, stars: 4, notes: 'No Bail', description: 'Failing order by Governor, AG or Judge' },
+            { id: 'PC 5.2', category: 'Judicial', label: 'Disruption of Trial', fine: 20000, stars: 4, notes: 'No Bail', description: 'Distrupting court processes' },
+            { id: 'PC 5.3', category: 'Judicial', label: 'Dishonoring Judiciary Member', fine: 20000, stars: 4, notes: 'No Bail', description: 'Dishonoring officer during performance' },
+            { id: 'PC 5.4', category: 'Judicial', label: 'Contempt of Court', fine: 20000, stars: 4, notes: 'No Bail', description: 'Being disobedient in court' },
+            { id: 'PC 5.5', category: 'Judicial', label: 'Ill-use of Judiciary Permit', fine: 20000, stars: 4, notes: 'Revocation / No Bail', description: 'Misuse of judicial permit' },
+            { id: 'PC 5.6', category: 'Judicial', label: 'Forged Evidence', fine: 20000, stars: 4, notes: 'No Bail', description: 'Tampering or forging evidence' },
+            { id: 'PC 5.7', category: 'Judicial', label: 'Perjury', fine: 20000, stars: 4, notes: 'No Bail', description: 'False oath in official proceedings' },
+
+            // Traffic Law
+            { id: 'TC 2.1', category: 'Traffic Law', label: 'Absence of Valid License Plate', fine: 5000, stars: 0, description: 'Driving without a valid license plate' },
+            { id: 'TC 3.1.4', category: 'Traffic Law', label: 'Minor Speed Violation', fine: 15000, stars: 0, notes: 'Class C Infraction', description: '10-30 Km/H over speed limit' },
+            { id: 'TC 3.1.5', category: 'Traffic Law', label: 'Mediocre Speed Violation', fine: 20000, stars: 0, notes: 'Class B Infraction', description: '31-60 KM/H over speed limit' },
+            { id: 'TC 3.1.6', category: 'Traffic Law', label: 'Major Speed Violation', fine: 25000, stars: 0, notes: 'Class A Infraction / Revoke License', description: '61-100 KM/H over speed limit' },
+            { id: 'TC 3.1.7', category: 'Traffic Law', label: 'Reckless Speed Violation', fine: 35000, stars: 0, notes: 'Radar Only (Not pulled over)', description: '101+ KM/H over speed limit' },
+            { id: 'TC 3.2.1', category: 'Traffic Law', label: 'Driving the Opposite Lane', fine: 20000, stars: 0, description: 'Driving into oncoming traffic' },
+            { id: 'TC 3.2.2', category: 'Traffic Law', label: 'Driving the Opposite Lane (Highway)', fine: 25000, stars: 0, notes: 'Revoke License', description: 'Driving into oncoming traffic on a highway' },
+            { id: 'TC 3.2.3', category: 'Traffic Law', label: 'Stopping on road for No Reason', fine: 20000, stars: 0, description: 'Stopping on a non-highway road' },
+            { id: 'TC 3.2.4', category: 'Traffic Law', label: 'Stopping on highway for No Reason', fine: 30000, stars: 0, notes: 'Revoke License', description: 'Obstructing a highway' },
+            { id: 'TC 3.4.1', category: 'Traffic Law', label: 'Driving on Deserted Sidewalks', fine: 20000, stars: 0, description: 'Driving on pedestrian walkways' },
+            { id: 'TC 3.4.2', category: 'Traffic Law', label: 'Chaotic Movement Between Lanes', fine: 10000, stars: 0, description: 'Reckless lane switching' },
+            { id: 'TC 3.4.3', category: 'Traffic Law', label: 'Failure to Keep Distance', fine: 10000, stars: 0, description: 'Tailgating another vehicle' },
+            { id: 'TC 3.4.4', category: 'Traffic Law', label: 'Hard Braking', fine: 20000, stars: 0, description: 'Braking suddenly without cause' },
+            { id: 'TC 3.4.5', category: 'Traffic Law', label: 'Creating Obstruction for Overtaking', fine: 10000, stars: 0, description: 'Blocking another vehicle from passing' },
+            { id: 'TC 3.5', category: 'Traffic Law', label: 'Driving Under Influence (DUI)', fine: 20000, stars: 0, description: 'Driving while intoxicated' },
+            { id: 'TC 3.6.1', category: 'Traffic Law', label: 'Participation in a Street Race', fine: 15000, stars: 0, description: 'Racing on public roads' },
+            { id: 'TC 3.6.2', category: 'Traffic Law', label: 'Organising a Street Race', fine: 25000, stars: 0, description: 'Setting up an illegal street race' },
+            { id: 'TC 3.7', category: 'Traffic Law', label: 'Excessive use of a horn', fine: 1500, stars: 0, description: 'Spamming the vehicle horn' },
+            { id: 'TC 3.8', category: 'Traffic Law', label: 'Use of anti-radar equipment', fine: 15000, stars: 0, description: 'Using radar jammers' },
+            { id: 'TC 3.9', category: 'Traffic Law', label: 'Illegal use of emergency lights', fine: 10000, stars: 0, description: 'Displaying lights on a non-state vehicle' },
+            { id: 'TC 3.10', category: 'Traffic Law', label: 'Failure to yield for a red light', fine: 5000, stars: 0, description: 'Running a red light' },
+            { id: 'TC 3.11', category: 'Traffic Law', label: 'Causing accident via red light', fine: 10000, stars: 0, description: 'Failing to yield for red light causing an accident' },
+            { id: 'TC 3.10.1', category: 'Traffic Law', label: 'Excessive revving in public', fine: 2000, stars: 0, description: 'Revving engine without permission' },
+            { id: 'TC 3.12', category: 'Traffic Law', label: 'Performing Burn-outs', fine: 2000, stars: 0, description: 'Doing burnouts' },
+            { id: 'TC 3.13', category: 'Traffic Law', label: 'Anti-social actions in vehicle', fine: 5000, stars: 0, description: 'Other anti-social vehicle actions' },
+            { id: 'TC 3.13.1', category: 'Traffic Law', label: 'Bicycle/Scooter on sidewalk', fine: 2500, stars: 0, description: 'Riding on sidewalk' },
+            { id: 'TC 3.13.2', category: 'Traffic Law', label: 'Bicycle/Scooter on state grounds', fine: 5000, stars: 0, description: 'Riding on state facility grounds' },
+            { id: 'TC 3.14', category: 'Traffic Law', label: 'Poor lane discipline (Highway)', fine: 3500, stars: 0, description: 'Swerving on a highway' },
+            { id: 'TC 3.15', category: 'Traffic Law', label: 'Poor lane discipline (Non-highway)', fine: 2000, stars: 0, description: 'Swerving off highway' },
+            { id: 'TC 3.16', category: 'Traffic Law', label: 'Illegal Highway Crossing', fine: 2000, stars: 0, description: 'Crossing highway not at intersection' },
+            { id: 'TC 3.17', category: 'Traffic Law', label: 'Off-roading', fine: 2000, stars: 0, description: 'Driving off designated roadways' },
+            { id: 'TC 3.18', category: 'Traffic Law', label: 'Jaywalking', fine: 5000, stars: 0, notes: 'Class C Infraction', description: 'Crossing road illegally' },
+            { id: 'TC 3.19', category: 'Traffic Law', label: 'Abandonment of vehicle', fine: 5000, stars: 0, notes: 'Class C Infraction', description: 'Leaving vehicle unattended on roadway' },
+            { id: 'TC 3.20', category: 'Traffic Law', label: 'Dangerous transportation', fine: 5000, stars: 0, notes: 'Class C Infraction', description: 'Transporting people unsafely' },
+            { id: 'TC 5.5', category: 'Traffic Law', label: 'Speed violation in special zone', fine: 5000, stars: 0, notes: 'Extra on previous amounts', description: 'Speeding in 60 km/h zone' },
+            { id: 'TC 8.2', category: 'Traffic Law', label: 'Driving without headlights', fine: 2500, stars: 0, description: 'No headlights at night/poor visibility' },
+            { id: 'TC 8.3', category: 'Traffic Law', label: 'Unsafe vehicle condition', fine: 3500, stars: 0, notes: 'OR Towing', description: 'Impaired vehicle ability' },
+            { id: 'TC 8.4', category: 'Traffic Law', label: 'Inoperable brake lights', fine: 3000, stars: 0, notes: 'OR Towing', description: 'Brake lights not working' },
+            { id: 'TC 8.5', category: 'Traffic Law', label: 'Visible smoke from vehicle', fine: 3500, stars: 0, notes: 'Charge with TC 8.3', description: 'Driving smoking vehicle' },
+            { id: 'TC 8.6', category: 'Traffic Law', label: 'Missing/smashed windscreen', fine: 1500, stars: 0, description: 'Damaged windshield' },
+            
+            // Parking Violations
+            { id: 'TC 6.2.A', category: 'Traffic Law', label: 'Illegal parking (Red Curb)', fine: 15000, stars: 0, notes: 'Class C / Towing', description: 'Parking on red curb' },
+            { id: 'TC 6.2.B', category: 'Traffic Law', label: 'Blocking Lane of Traffic', fine: 15000, stars: 0, notes: 'Class C / Towing', description: 'Blocking traffic lane' },
+            { id: 'TC 6.2.C', category: 'Traffic Law', label: 'Blocking Exit', fine: 15000, stars: 0, notes: 'Class C / Towing', description: 'Blocking any exit' },
+            { id: 'TC 6.2.D', category: 'Traffic Law', label: 'Parking in Crosswalk', fine: 15000, stars: 0, notes: 'Class C / Towing', description: 'Parking at crosswalk' },
+            { id: 'TC 6.2.E', category: 'Traffic Law', label: 'Blocking Sidewalk', fine: 15000, stars: 0, notes: 'Class C / Towing', description: 'Blocking sidewalk or bike path' },
+            { id: 'TC 6.2.F', category: 'Traffic Law', label: 'Parking on Dividing Strip', fine: 15000, stars: 0, notes: 'Class C / Towing', description: 'Double yellow/No parking stripes' },
+            { id: 'TC 6.2.G', category: 'Traffic Law', label: 'Parking Against Traffic', fine: 15000, stars: 0, notes: 'Class C / Towing', description: 'Facing opposing flow' },
+            { id: 'TC 6.2.H', category: 'Traffic Law', label: 'Parking on Bridges/Tunnels', fine: 15000, stars: 0, notes: 'Class C / Towing', description: 'Parking in tunnel or bridge' },
+            { id: 'TC 6.2.I', category: 'Traffic Law', label: 'Parking on Highway', fine: 15000, stars: 0, notes: 'Class C / Towing', description: 'Parking on highway/freeway' },
+            { id: 'TC 6.2.J', category: 'Traffic Law', label: 'Parking Near Fire', fine: 15000, stars: 0, notes: 'Class C / Towing', description: 'Within 20m of building on fire' },
+            { id: 'TC 6.2.K', category: 'Traffic Law', label: 'Blocking Bus Stop', fine: 15000, stars: 0, notes: 'Class C / Towing', description: 'Parking at bus stop' },
+            { id: 'TC 6.2.L', category: 'Traffic Law', label: 'Parking on Railroad', fine: 15000, stars: 0, notes: 'Class C / Towing', description: 'On tracks or train skid path' },
+            { id: 'TC 6.2.M', category: 'Traffic Law', label: 'Parking in Yellow Space', fine: 15000, stars: 0, notes: 'Class C / Towing', description: 'Yellow marked space' },
+            { id: 'TC 6.2.N', category: 'Traffic Law', label: 'Violating Road Markings', fine: 15000, stars: 0, notes: 'Class C / Towing', description: 'Ignoring parking spaces markings' },
+            { id: 'TC 6.2.P', category: 'Traffic Law', label: 'Parking on Lawns', fine: 15000, stars: 0, notes: 'Class C / Towing', description: 'Lawns, green spaces' },
+            { id: 'TC 6.2.Q', category: 'Traffic Law', label: 'Wrong Parking Direction', fine: 15000, stars: 0, notes: 'Class C / Towing', description: 'Violation of parking direction' },
+            { id: 'TC 6.4', category: 'Traffic Law', label: 'Unauthorized Presence in Prison', fine: 25000, stars: 0, notes: 'Impound', description: 'Parking at prison territory' },
+            { id: 'TC 9.1', category: 'Traffic Law', label: 'Illegal Parking: City Hall', fine: 20000, stars: 0, description: 'Capitol / City Hall parking' },
+            { id: 'TC 9.2', category: 'Traffic Law', label: 'Illegal Parking: Casino', fine: 20000, stars: 0, description: 'Casino parking' },
+            { id: 'TC 9.3', category: 'Traffic Law', label: 'Illegal Parking: Pillbox', fine: 20000, stars: 0, description: 'Pillbox Hospital parking' },
+            { id: 'TC 9.4', category: 'Traffic Law', label: 'Illegal Parking: Maze Bank', fine: 20000, stars: 0, description: 'Maze Bank parking' },
+            { id: 'TC 9.5', category: 'Traffic Law', label: 'Illegal Parking: LSPD', fine: 20000, stars: 0, description: 'LSPD parking' },
+            { id: 'TC 9.6', category: 'Traffic Law', label: 'Illegal Parking: SAHP', fine: 20000, stars: 0, description: 'SAHP parking' },
+            { id: 'TC 9.7', category: 'Traffic Law', label: 'Illegal Parking: Power Plant', fine: 20000, stars: 0, description: 'Power Plant parking' },
+            { id: 'TC 9.8', category: 'Traffic Law', label: 'Illegal Parking: Beach Market', fine: 20000, stars: 0, description: 'Beach Market parking' },
+            { id: 'TC 9.9', category: 'Traffic Law', label: 'Illegal Parking: Power/Adam\'s Apple', fine: 20000, stars: 0, description: 'Power Street / Adam\'s Apple Blvd parking' },
+            { id: 'TC 9.10', category: 'Traffic Law', label: 'Illegal Parking: Postal Downtown', fine: 20000, stars: 0, description: 'Postal downtown parking' },
+            { id: 'TC 9.11', category: 'Traffic Law', label: 'Illegal Parking: Sawmill', fine: 20000, stars: 0, description: 'Sawmill parking' },
+            { id: 'TC 9.12.1', category: 'Traffic Law', label: 'Illegal Parking: Farm 1', fine: 20000, stars: 0, description: 'Farm 1 parking' },
+            { id: 'TC 9.12.2', category: 'Traffic Law', label: 'Illegal Parking: Farm 2', fine: 20000, stars: 0, description: 'Farm 2 parking' }
+        ];
+
+        const BODYCAM_COMMANDS = [
+            {
+                title: "📸 While Going ON-Duty or Waking Up:",
+                commands: [
+                    "/me takes out bodycam, turns it on and checks for the red light",
+                    "/do The bodycam is recording, and is ballistic and waterproof",
+                    "( [BADGE NUMBER] ) to Dispatch Show 10-41 at [TIME]"
+                ]
+            },
+            {
+                title: "📸 After a Code A or Uniform Change:",
+                commands: [
+                    "/me refreshes bodycam"
+                ]
+            },
+            {
+                title: "📸 When Going OFF-Duty:",
+                commands: [
+                    "/do saves the bodycam content and uploads the bodycam to LSPD servers and stops recording",
+                    "( [BADGE NUMBER] ) to Dispatch Show 10-42 at [TIME]"
+                ]
+            },
+            {
+                title: "📸 During a Lawyer Request:",
+                commands: [
+                    "/me saves contents of bodycam, uploads to LSPD servers and continues recording",
+                    "/do bodycam footage was saved, uploaded and bodycam is still recording",
+                    "/me displays bodycam footage through PDA"
+                ]
+            },
+            {
+                title: "📸 After a Situation:",
+                commands: [
+                    "/me saves contents of bodycam, uploads to LSPD servers and continues recording",
+                    "/do bodycam footage was saved, uploaded and bodycam is still recording"
+                ]
+            }
+        ];
+
+        const ARREST_STEPS = [
+            { type: 'say', text: "Okay Sir or Ma'am, I am going to be placing you in cuffs" },
+            { type: 'action', text: "Flex Z Muscle to handcuff the suspect" },
+            { type: 'say', text: "Okay Sir or Ma'am, I am going to be grabbing you by the arm, please follow" },
+            { type: 'action', text: "Flex X Muscle to grab the suspect by the arm" },
+            { type: 'say', text: "Okay Sir or Ma'am, I am going to be placing you into the vehicle, please watch your head" },
+            { type: 'action', text: "Flex G Muscle then Organization then Place in vehicle" },
+            { type: 'dispatch', text: "( [BADGE NUMBER] ) To Dispatch, show me 10-17 to DOC with NUMBER of 10-15 and zero ADDITIONALS" },
+            { type: 'say', text: "Alright Sir or Ma'am, today you are being charged with YOUR CHARGES" },
+            { type: 'say', text: "You have the right to remain silent. Anything you say can and will be used against you in a court of law. You have the right to an attorney. If you cannot afford an attorney, one will be appointed to you by the state if available. Do you understand the rights I just read to you" },
+            { type: 'dispatch', text: "( [BADGE NUMBER] ) To Dispatch, my 10-15 is requesting a state lawyer at DOC" },
+            { type: 'say', text: "Watch your head while take out of vechile" },
+            { type: 'action', text: "Flex G Muscle on the car then Select passengers then Click the passenger to be dropped off" },
+            { type: 'say', text: "Sir or Ma'am, what size jumpsuit are you" },
+            { type: 'command', text: "/me grabs a (small,medium,large) SIZE jumpsuit from behind the counter" },
+            { type: 'say', text: "Sir or Ma'am, I am going to reach into your pockets to find your passport" },
+            { type: 'action', text: "Flex G Muscle then Organization 2 then Find out personal information 7" },
+            { type: 'say', text: "Sir or Ma'am, I am going to search you for any legal items" },
+            { type: 'action', text: "Flex G Muscle then Organization 2 then Search 2" },
+            { type: 'action', text: "Pull out your PDA and issue the suspect a wanted level" },
+            { type: 'action', text: "Flex J Muscle to pull out your PDA and issue applicable fines" },
+            { type: 'say', text: "Sir or Ma'am, I am going to be putting you in your jumpsuit now" },
+            { type: 'action', text: "Flex G Muscle then Organization 2 then Arrest 6" },
+            { type: 'dispatch', text: "( [BADGE NUMBER] ) to dispatch, show my last 10-15 is now 10-99 and I am 10-19" }
+        ];
+
+        // Global Application State
+        let activeTab = 'penalCode';
+        let searchQuery = '';
+        let selectedCategory = 'All';
+        let globalBadgeNumber = '[BADGE NUMBER]';
+
+        // Core DOM Elements
+        const searchInput = document.getElementById('search-input');
+        const categorySelect = document.getElementById('category-select');
+        const filterContainer = document.getElementById('filter-container');
+        const statsContainer = document.getElementById('stats-container');
+        const lawsTableBody = document.getElementById('laws-table-body');
+        const bodycamCommandsContainer = document.getElementById('bodycam-commands-container');
+
+        function init() {
+            // Populate Categories for Filter
+            const categories = [...new Set(PENAL_CODE.map(item => item.category))];
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat;
+                option.textContent = cat;
+                categorySelect.appendChild(option);
+            });
+
+            // Set up search and filter listeners
+            searchInput.addEventListener('input', (e) => {
+                searchQuery = e.target.value.toLowerCase();
+                renderLaws();
+            });
+
+            categorySelect.addEventListener('change', (e) => {
+                selectedCategory = e.target.value;
+                renderLaws();
+            });
+
+            // Initial view renders
+            renderBodycamCommands();
+            renderArrestGuide();
+            renderLaws();
+            
+            // Initialize Lucide icons
+            lucide.createIcons();
+        }
+
+        function switchTab(tabName) {
+            activeTab = tabName;
+            const tabs = ['penalCode', 'bodycam', 'sops', 'logs'];
+            
+            tabs.forEach(t => {
+                const el = document.getElementById('tab-' + t);
+                const btn = document.getElementById('tab-btn-' + t);
+                if (!el || !btn) return;
+                
+                if (t === tabName) {
+                    el.classList.remove('hide');
+                    btn.className = "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-md text-sm font-bold transition-all bg-blue-600 text-white shadow-md whitespace-nowrap";
+                } else {
+                    el.classList.add('hide');
+                    btn.className = "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-md text-sm font-bold transition-all text-slate-400 hover:text-white hover:bg-slate-700/50 whitespace-nowrap";
+                }
+            });
+            
+            // Show/Hide search filter
+            if (tabName === 'penalCode') {
+                filterContainer.classList.remove('hide');
+            } else {
+                filterContainer.classList.add('hide');
+            }
+        }
+
+        function updateBadgeNumber(val) {
+            globalBadgeNumber = val.trim() !== '' ? val.trim() : '[BADGE NUMBER]';
+            
+            // Sync all inputs
+            document.querySelectorAll('.badge-sync').forEach(input => {
+                if (input.value !== val) input.value = val;
+            });
+            
+            // Re-render strings utilizing the badge number
+            renderBodycamCommands();
+            renderArrestGuide();
+        }
+
+        function copyFormLog(formType, btnId) {
+            let text = "";
+            if (formType === 'tow') {
+                text = `Owner Name: ${document.getElementById('tow-owner').value}\nLicense Plate: ${document.getElementById('tow-plate').value}\nReason: ${document.getElementById('tow-reason').value}\nAmount of Fine: ${document.getElementById('tow-fine').value}\nProof: ${document.getElementById('tow-proof').value}`;
+            } else if (formType === 'arrest') {
+                text = `Name of Suspect: ${document.getElementById('arrest-name').value}\nWanted Stars: ${document.getElementById('arrest-stars').value}\nArrested For: ${document.getElementById('arrest-reason').value}\nFines : ${document.getElementById('arrest-fines').value}\nProof : ${document.getElementById('arrest-proof').value}`;
+            } else if (formType === 'prison') {
+                text = `Name | ID: ${document.getElementById('prison-name-id').value}\nOrganization: ${document.getElementById('prison-org').value}\nStart Time: ${document.getElementById('prison-start').value}\nEnd Time: ${document.getElementById('prison-end').value}\nProof: ${document.getElementById('prison-proof').value}`;
+            } else if (formType === 'activity') {
+                text = `==============================\nDuty Status:\n• On Duty: ${document.getElementById('act-on').value}\n• Off Duty: ${document.getElementById('act-off').value}\n==============================\nActivity Log:\n• Tows Made: ${document.getElementById('act-tows').value}\n• Tickets/Fines Issued: ${document.getElementById('act-tickets').value}\n• Arrests Made: ${document.getElementById('act-arrests').value}\n• Items Confiscated: ${document.getElementById('act-items').value}\n• Events Attended: ${document.getElementById('act-events').value}\n==============================\nLog:\n• Weapons Taken: ${document.getElementById('act-w-taken').value}\n• Weapons Returned: ${document.getElementById('act-w-returned').value}\n• Weapons Given (to/from whom): ${document.getElementById('act-w-given').value}\n==============================\nBodycam Proof:\n${document.getElementById('act-proof').value}\n==============================`;
+            }
+
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            const btn = document.getElementById(btnId);
+            const originalHTML = btn.innerHTML;
+            
+            btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> Copied!`;
+            btn.classList.replace('bg-blue-600', 'bg-emerald-500');
+            btn.classList.replace('hover:bg-blue-700', 'hover:bg-emerald-600');
+            lucide.createIcons();
+
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.replace('bg-emerald-500', 'bg-blue-600');
+                btn.classList.replace('hover:bg-emerald-600', 'hover:bg-blue-700');
+                lucide.createIcons();
+            }, 2000);
+        }
+
+        function downloadOffline() {
+            const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Grand_RP_LEO_Tool.html';
+            document.body.appendChild(a);
+            a.click();
+            
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function copyText(text, btnId) {
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            const btn = document.getElementById(btnId);
+            if (!btn) return;
+            const originalHTML = btn.innerHTML;
+            const originalClasses = btn.className;
+
+            if (btnId.startsWith('copy-law-')) {
+                btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> Copied`;
+                btn.className = "w-full lg:w-auto flex items-center justify-center gap-2 p-2.5 rounded-lg transition-all font-bold text-xs uppercase tracking-wide bg-emerald-500 text-white shadow-lg shadow-emerald-500/20";
+            } else {
+                btn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5"></i>`;
+                btn.classList.add('bg-blue-500', 'text-white');
+            }
+            
+            lucide.createIcons();
+
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.className = originalClasses;
+                lucide.createIcons();
+            }, 2000);
+        }
+
+        function getStarHTML(stars) {
+            if (stars === 0) return '<span class="text-slate-700 text-xs">—</span>';
+            let html = '';
+            for (let i = 0; i < 5; i++) {
+                html += `<span class="text-sm ${i < stars ? 'text-amber-400' : 'text-slate-800'}">★</span>`;
+            }
+            return html;
+        }
+
+        function renderLaws() {
+            const filteredCrimes = PENAL_CODE.filter(crime => {
+                const matchesSearch = 
+                    crime.label.toLowerCase().includes(searchQuery) || 
+                    crime.id.toLowerCase().includes(searchQuery) ||
+                    (crime.description && crime.description.toLowerCase().includes(searchQuery));
+                const matchesCategory = selectedCategory === 'All' || crime.category === selectedCategory;
+                return matchesSearch && matchesCategory;
+            });
+
+            // Gather and Render Stats
+            const categoriesCount = new Set(PENAL_CODE.map(item => item.category)).size;
+            const highPriorityCount = PENAL_CODE.filter(l => l.stars >= 4).length;
+            const noBailCount = PENAL_CODE.filter(l => l.notes && l.notes.includes('No Bail')).length;
+
+            statsContainer.innerHTML = `
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-sm">
+                    <p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest">Active Laws</p>
+                    <p class="text-2xl font-bold mt-1 text-blue-400">${PENAL_CODE.length}</p>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-sm">
+                    <p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest">High Priority</p>
+                    <p class="text-2xl font-bold mt-1 text-red-400">${highPriorityCount}</p>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-sm">
+                    <p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest">No Bail</p>
+                    <p class="text-2xl font-bold mt-1 text-amber-400">${noBailCount}</p>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-sm">
+                    <p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest">Chapters</p>
+                    <p class="text-2xl font-bold mt-1 text-emerald-400">${categoriesCount}</p>
+                </div>
+            `;
+
+            // Render Table Content
+            if (filteredCrimes.length === 0) {
+                lawsTableBody.innerHTML = `
+                    <div class="p-20 text-center">
+                        <i data-lucide="info" class="w-12 h-12 text-slate-800 mx-auto mb-4"></i>
+                        <p class="text-slate-500 font-medium italic">No legal codes found for "${searchQuery}"</p>
+                    </div>
+                `;
+            } else {
+                lawsTableBody.innerHTML = filteredCrimes.map(crime => {
+                    const btnId = `copy-law-${crime.id.replace(/\s+/g, '-').replace(/\./g, '-')}`;
+                    const escLabel = crime.label.replace(/'/g, "\\'");
+                    const escId = crime.id.replace(/'/g, "\\'");
+
+                    let notesHtml = `<span class="text-slate-600 text-xs italic">Standard Process</span>`;
+                    if (crime.notes) {
+                        notesHtml = `<div class="flex flex-wrap gap-1.5">
+                            ${crime.notes.split(' / ').map(note => `
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded border whitespace-nowrap ${note.includes('No Bail') ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-slate-800 text-slate-300 border-slate-700'}">
+                                    ${note}
+                                </span>
+                            `).join('')}
+                        </div>`;
+                    }
+
+                    return `
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 px-6 py-5 hover:bg-slate-800/40 transition-all items-center group">
+                            <div class="col-span-1">
+                                <span class="bg-slate-950 text-blue-400 font-mono text-xs font-bold px-2.5 py-1 rounded border border-slate-800">
+                                    ${crime.id}
+                                </span>
+                            </div>
+                            <div class="col-span-4">
+                                <h3 class="font-bold text-slate-100 group-hover:text-blue-400 transition-colors flex items-center gap-2">
+                                    ${crime.label}
+                                    ${crime.stars >= 4 ? `<svg class="w-3.5 h-3.5 text-red-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>` : ''}
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">${crime.description}</p>
+                                <p class="lg:hidden text-[10px] text-blue-500 font-bold mt-2 uppercase tracking-wide">${crime.category}</p>
+                            </div>
+                            <div class="col-span-2 lg:text-center">
+                                <div class="lg:hidden text-[10px] text-slate-500 uppercase font-bold mb-1">Penalty Fine</div>
+                                <span class="text-emerald-400 font-bold text-sm bg-emerald-400/10 px-2 py-1 rounded">
+                                    ${crime.fine > 0 ? `$${crime.fine.toLocaleString()}` : '<span class="text-slate-400">Variable</span>'}
+                                </span>
+                            </div>
+                            <div class="col-span-2 lg:text-center">
+                                <div class="lg:hidden text-[10px] text-slate-500 uppercase font-bold mb-1">Star Rating</div>
+                                <div class="flex lg:justify-center items-center gap-0.5">
+                                    ${getStarHTML(crime.stars)}
+                                </div>
+                            </div>
+                            <div class="col-span-2">
+                                <div class="lg:hidden text-[10px] text-slate-500 uppercase font-bold mb-1">Administrative Notes</div>
+                                ${notesHtml}
+                            </div>
+                            <div class="col-span-1 lg:text-right mt-2 lg:mt-0">
+                                <button 
+                                    id="${btnId}"
+                                    onclick="copyText('${escId} ${escLabel}', '${btnId}')"
+                                    class="w-full lg:w-auto flex items-center justify-center gap-2 p-2.5 rounded-lg transition-all font-bold text-xs uppercase tracking-wide bg-slate-800 text-slate-300 hover:bg-blue-600 hover:text-white border border-slate-700 hover:border-blue-500"
+                                >
+                                    <i data-lucide="copy" class="w-4 h-4"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            lucide.createIcons();
+        }
+
+        function renderBodycamCommands() {
+            const timeStr = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+            
+            bodycamCommandsContainer.innerHTML = BODYCAM_COMMANDS.map((group, index) => {
+                const commandsHtml = group.commands.map((cmd, i) => {
+                    const btnId = `copy-bc-${index}-${i}`;
+                    
+                    // Replace tags with proper badge text or time
+                    let processedCmd = cmd
+                        .replace(/\[BADGE NUMBER\]/g, globalBadgeNumber === '[BADGE NUMBER]' ? 'Badge number' : globalBadgeNumber)
+                        .replace(/\[TIME\]/gi, timeStr);
+                    const escCmd = processedCmd.replace(/'/g, "\\'");
+                    
+                    return `
+                        <div class="group relative flex items-center justify-between p-2 hover:bg-slate-800/50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-slate-700" onclick="copyText('${escCmd}', '${btnId}')">
+                            <code class="text-xs text-blue-300 font-mono break-all pr-8">${processedCmd}</code>
+                            <button id="${btnId}" class="absolute right-2 opacity-0 group-hover:opacity-100 p-1.5 bg-slate-700 text-white rounded-md transition-all hover:bg-blue-500 flex-shrink-0">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg h-full flex flex-col">
+                        <div class="bg-slate-800/50 px-4 py-3 border-b border-slate-800">
+                            <h3 class="font-bold text-sm text-slate-200">${group.title}</h3>
+                        </div>
+                        <div class="p-2 space-y-1 flex-1 flex flex-col justify-center">
+                            ${commandsHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            lucide.createIcons();
+        }
+
+        function renderArrestGuide() {
+            const container = document.getElementById('arrest-guide-container');
+            if(!container) return;
+
+            container.innerHTML = ARREST_STEPS.map((step, index) => {
+                const btnId = `copy-arrest-${index}`;
+                let processedText = step.text.replace(/\[BADGE NUMBER\]/g, globalBadgeNumber === '[BADGE NUMBER]' ? 'Badge number' : globalBadgeNumber);
+                const escText = processedText.replace(/'/g, "\\'");
+
+                let iconHtml = '';
+                let labelHtml = '';
+                let bgClass = 'bg-slate-900 border-slate-800 hover:bg-slate-800/80';
+                let textClass = 'text-slate-300';
+
+                if (step.type === 'say') {
+                    iconHtml = `<i data-lucide="message-square" class="w-4 h-4 text-emerald-400"></i>`;
+                    labelHtml = `<span class="text-[10px] font-bold uppercase tracking-wider text-emerald-500 mb-0 block">Say</span>`;
+                    textClass = 'text-emerald-100 font-medium';
+                    bgClass = 'bg-slate-900 border-slate-800 hover:border-emerald-500/30 hover:bg-slate-800/80';
+                } else if (step.type === 'action') {
+                    iconHtml = `<i data-lucide="mouse-pointer-click" class="w-4 h-4 text-amber-400"></i>`;
+                    labelHtml = `<span class="text-[10px] font-bold uppercase tracking-wider text-amber-500 mb-0 block">Action</span>`;
+                    textClass = 'text-amber-100/90';
+                    bgClass = 'bg-slate-900 border-slate-800 hover:border-amber-500/30 hover:bg-slate-800/80';
+                } else if (step.type === 'dispatch') {
+                    iconHtml = `<i data-lucide="radio" class="w-4 h-4 text-blue-400"></i>`;
+                    labelHtml = `<span class="text-[10px] font-bold uppercase tracking-wider text-blue-500 mb-0 block">Department Radio</span>`;
+                    textClass = 'text-blue-200 font-mono text-sm';
+                    bgClass = 'bg-blue-950/20 border-blue-900/30 hover:border-blue-500/50 hover:bg-blue-900/40';
+                } else if (step.type === 'command') {
+                    iconHtml = `<i data-lucide="terminal-square" class="w-4 h-4 text-purple-400"></i>`;
+                    labelHtml = `<span class="text-[10px] font-bold uppercase tracking-wider text-purple-500 mb-0 block">Chat Command</span>`;
+                    textClass = 'text-purple-200 font-mono text-sm';
+                    bgClass = 'bg-purple-950/20 border-purple-900/30 hover:border-purple-500/50 hover:bg-purple-900/40';
+                }
+
+                return `
+                    <div class="group relative flex flex-col p-4 rounded-xl transition-all cursor-pointer border ${bgClass}" onclick="copyText('${escText}', '${btnId}')">
+                        <div class="flex items-center gap-2 mb-1.5">
+                            ${iconHtml}
+                            ${labelHtml}
+                        </div>
+                        <div class="pr-12">
+                            <span class="${textClass} leading-relaxed">${processedText}</span>
+                        </div>
+                        <button id="${btnId}" class="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-2.5 bg-slate-800 text-white rounded-lg transition-all hover:bg-blue-500 flex-shrink-0 shadow-lg border border-slate-700 hover:border-blue-400">
+                            <i data-lucide="copy" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+            
+            lucide.createIcons();
+        }
+
+        // Fire off initialization
+        init();
+    </script>
+
+</body>
+</html>
